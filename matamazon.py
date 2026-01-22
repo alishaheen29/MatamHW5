@@ -1,6 +1,45 @@
 # TODO add all imports needed here
+import json
+import sys
+
+
+#impleminting the exceptions :
+class InvalidIdException(Exception):
+    pass
+
+class InvalidPriceException(Exception):
+    pass
+
+#helper funcs
+def is_valid_nonnegative_int(value):
+    return isinstance(value, int) and not  isinstance(value,bool) and value >= 0
+
+def validate_nonnegative_int(value , field_name = "id"):
+    if not is_valid_nonnegative_int(value):
+        raise InvalidIdException("Invalid {}: {}".format(field_name, value))
+
+def validate_nonnegative_price(value,field_name = "price"):
+    if isinstance(value, bool) or not isinstance(value, (int , float)) or value < 0:
+        raise InvalidPriceException("Invalid {}: {}".format(value))
 
 class Customer:
+
+    def __init__(self , id: int , name: str , city: str , address: str ):
+        validate_nonnegative_int(id,"id")
+        self.id = id
+        self.name = name
+        self.city = city
+        self.address = address
+
+    def __repr__(self):
+        return "Customer(id={}, name='{}', city='{}', address='{}')".format(
+            self.id, self.name, self.city, self.address
+        )
+
+    __str__ = __repr__
+
+
+
     """
     Represents a customer in the Matamazon system.
 
@@ -24,6 +63,20 @@ class Customer:
 
 
 class Supplier:
+    def __init__(self , id: int , name: str , city: str , address: str ):
+        validate_nonnegative_int(id,"id")
+        self.id = id
+        self.name = name
+        self.city = city
+        self.address = address
+
+    def __repr__(self):
+        return "Supplier(id={}, name='{}', city='{}', address='{}')".format(
+            self.id, self.name, self.city, self.address
+        )
+
+    __str__ = __repr__
+
     """
     Represents a supplier in the Matamazon system.
 
@@ -46,6 +99,25 @@ class Supplier:
 
 
 class Product:
+    def __init__(self , id: int , name: str , price: float , supplier_id: int, quantity: int):
+        validate_nonnegative_int(id,"id")
+        validate_nonnegative_int(supplier_id,"supplier_id")
+        validate_nonnegative_int(quantity,"quantity")
+        validate_nonnegative_price(price,"price")
+        self.id = id
+        self.name = name
+        self.price = float(price)
+        self.supplier_id = supplier_id
+        self.quantity = quantity
+
+        def __repr__(self):
+            # Keep price as python float printing (like 29.99)
+            return "Product(id={}, name='{}', price={}, supplier_id={}, quantity={})".format(
+                self.id, self.name, self.price, self.supplier_id, self.quantity
+            )
+
+        __str__ = __repr__
+
     """
     Represents a product sold on the Matamazon website.
 
@@ -72,6 +144,26 @@ class Product:
 
 
 class Order:
+    def __init__(self , id: int , customer_id: int, product_id: int, quantity: int, total_price: float):
+        validate_nonnegative_int(id,"id")
+        validate_nonnegative_int(customer_id,"customer_id")
+        validate_nonnegative_int(product_id,"product_id")
+        validate_nonnegative_int(quantity,"quantity")
+        validate_nonnegative_price(total_price,"total_price")
+
+        self.id = id
+        self.customer_id = customer_id
+        self.product_id = product_id
+        self.quantity = quantity
+        self.total_price = float(total_price)
+
+    def __repr__(self):
+        return "Order(id={}, customer_id={}, product_id={}, quantity={}, total_price={})".format(
+            self.id, self.customer_id, self.product_id, self.quantity, self.total_price
+        )
+
+    __str__ = __repr__
+
     """
     Represents a placed order.
 
